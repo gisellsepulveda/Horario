@@ -1,66 +1,71 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Horario 📅
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web para la **gestión de horarios de clases y estudiantes**, desarrollado con **Laravel**.
 
-## About Laravel
+## ⚙️ ¿Cómo funciona?
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Horario está pensado como una herramienta centralizada para organizar la carga académica de una institución educativa. Su lógica gira en torno a tres elementos principales que se relacionan entre sí:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Estudiantes**: cada uno pertenece a un grupo o programa académico y tiene asignado un conjunto de clases.
+- **Clases/asignaturas**: cada una cuenta con un docente, un aula y una franja horaria específica (día y hora de inicio/fin).
+- **Horarios**: el sistema cruza estudiantes, clases, docentes y aulas para generar la agenda semanal de cada estudiante, evitando que se solapen horarios entre sí (por ejemplo, que un mismo docente o aula queden asignados a dos clases al mismo tiempo).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Flujo de uso típico
 
-## Learning Laravel
+1. Un administrador registra las **asignaturas**, los **docentes** y las **aulas** disponibles.
+2. Se crean los **grupos o programas** en los que se matriculan los estudiantes.
+3. El sistema asigna las clases a cada grupo, generando el **horario semanal** correspondiente.
+4. Cada estudiante puede consultar su horario personal: qué clase tiene, en qué aula, con qué docente y a qué hora.
+5. Si se intenta crear un cruce de horarios (mismo docente, aula o estudiante en dos clases simultáneas), el sistema debe evitarlo o alertar del conflicto.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Arquitectura interna
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Al estar construido sobre Laravel, el proyecto sigue el patrón **MVC (Modelo-Vista-Controlador)**:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Modelos** (`app/Models`): representan las entidades del sistema (Estudiante, Clase, Docente, Aula, Horario) y sus relaciones en la base de datos, gestionadas mediante el ORM **Eloquent**.
+- **Controladores** (`app/Http/Controllers`): contienen la lógica que procesa las peticiones — por ejemplo, crear un horario, matricular a un estudiante o validar que no existan cruces.
+- **Vistas** (`resources/views`): son las páginas que ve el usuario, construidas con plantillas Blade y estilizadas con Tailwind CSS.
+- **Rutas** (`routes/web.php`): definen las URLs de la aplicación y qué controlador atiende cada una.
+- **Base de datos** (`database/migrations`): define la estructura de las tablas y sus relaciones (por ejemplo, un estudiante tiene muchas clases, una clase pertenece a un docente y un aula).
 
-## Laravel Sponsors
+En resumen: cuando un usuario visita una página, Laravel enruta la petición a un controlador, este consulta o modifica los datos a través de los modelos, y finalmente devuelve una vista con la información — todo dentro del ciclo estándar de una aplicación Laravel.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Tecnologías utilizadas
 
-### Premium Partners
+| Categoría | Tecnología |
+|---|---|
+| Framework backend | **Laravel** (PHP) |
+| Frontend / Estilos | **Tailwind CSS** |
+| Bundler de assets | **Vite** |
+| Base de datos | Configurable vía `.env` |
+| ORM | **Eloquent** |
+| Testing | **PHPUnit** |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 📂 Estructura del proyecto
 
-## Contributing
+```
+app/            # Modelos, controladores y lógica de negocio
+bootstrap/      # Arranque del framework
+config/         # Archivos de configuración
+database/       # Migraciones, seeders y factories
+public/         # Punto de entrada público y assets compilados
+resources/      # Vistas Blade, CSS y JS fuente
+routes/         # Definición de rutas (web.php, api.php, etc.)
+storage/        # Archivos generados, logs, cache
+tests/          # Pruebas automatizadas
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🤝 Contribuciones
 
-## Code of Conduct
+Las contribuciones son bienvenidas. Si deseas colaborar:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Haz un fork del proyecto
+2. Crea una rama para tu funcionalidad (`git checkout -b feature/nueva-funcionalidad`)
+3. Haz commit de tus cambios (`git commit -m "Agrega nueva funcionalidad"`)
+4. Sube la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 👤 Autor
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Desarrollado por [gisellsepulveda](https://github.com/gisellsepulveda)
